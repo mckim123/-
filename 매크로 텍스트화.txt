@@ -1,0 +1,2173 @@
+1. 원하는미주로이동
+
+function OnScriptMacro_미주숫자로이동()
+{
+	A=GetPosBySet();
+	ListA=A.item("List");
+	ParaA=A.Item("Para");
+	PosA=A.Item("Pos");
+
+	MovePos(2,0,0); // 문서 제일 앞으로 이동
+	미주번호();
+	HAction.Run("MoveSelRight");
+	var startnumber = GetTextFile("TEXT","saveblock");
+	var startnumber =  startnumber.replace( /\./g, "" );
+	var startnumber =  startnumber.replace( /\)/g, "" );
+
+	MovePos(ListA,ParaA,PosA); // 원래 커서 위치로 이동
+
+	 if ( startnumber == 1 ) {
+
+	var Hc=HeadCtrl;
+	cnt=0;
+	do{
+	if(Hc.CtrlID=="en"){	
+		//setPosBySet(Hc.GetAnchorPos(0));
+		cnt++;
+}
+	Hc=Hc.next
+}while(Hc)
+
+	str=prompt("이동할 미주 번호를 입력해 주세요.","코딩헤윰");
+
+	var i = str;
+	if ( cnt < i || i <= 0){
+	with( XHwpMessageBox )
+	{
+	String =  i + "번은 없는 번호 입니다. 다시 입력해주세요.";
+	Flag = 0;
+	DoModal();
+	}
+	return;
+	}
+
+	if ( cnt >= i ){
+	MovePos(2,0,0); // 문서 제일 앞으로 이동 
+
+	미주번호();
+
+
+	for(var k=1; k<i;k++){
+	HAction.Run("NoteToNext"); //다음 미주 번호로 이동 
+	}
+	HAction.Run("CloseEx"); // 미주 번호 빠져나오기
+
+
+	//화면 스크롤 다운 15번 
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+
+
+	}
+
+	}
+	else {
+
+	MovePos(2,0,0); // 문서 제일 앞으로 이동
+	var Hc=HeadCtrl;
+	cnt=0;
+	do{
+	if(Hc.CtrlID=="en"){	
+		//setPosBySet(Hc.GetAnchorPos(0));
+		cnt++;
+}
+	Hc=Hc.next
+}while(Hc)
+
+	MovePos(ListA,ParaA,PosA); // 원래 커서 위치로 이동
+
+	str=prompt("이동할 미주 번호를 입력해 주세요.","코딩헤윰");
+	if ( str == null ) {
+	 return;
+	}
+	else if(str != parseInt(str)) {
+	with( XHwpMessageBox )
+	{
+	String =  "잘못된 번호 형식입니다. 다시 입력해주세요.";
+	Flag = 0;
+	DoModal();
+	}
+	return;
+	}
+
+	str=str.replace( /\s/g, "" );
+	var arr=eval("["+str+"]");
+
+	if (  arr < parseInt(startnumber) || parseInt(startnumber)+cnt-1 < arr) {
+	with( XHwpMessageBox )
+	{
+	String =  arr + "번은 없는 번호 입니다. 다시 입력해주세요.";
+	Flag = 0;
+	DoModal();
+	}
+	return;
+	}
+
+	else {
+	MovePos(2,0,0); // 문서 제일 앞으로 이동 
+
+	미주번호();
+
+	for(var k=0;k<arr-startnumber;k++){
+	HAction.Run("NoteToNext"); //다음 미주 번호로 이동 
+	}
+	HAction.Run("CloseEx"); // 미주 번호 빠져나오기
+
+
+	//화면 스크롤 다운 15번 
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+	HAction.Run("MoveScrollDown");
+
+	}
+
+}
+
+
+}
+
+function prompt(prompt, title) {
+	if ( prompt === undefined ) prompt = '';
+	if ( title === undefined ) tilte = '';
+	var script = new ActiveXObject('MSScriptControl.ScriptControl');
+	script.language = 'vbscript';
+	return script.eval('inputbox("' + prompt + '","' + title + '")');
+}
+
+function 미주번호()
+{
+ var act=CreateAction("Goto");
+ var set=act.CreateSet();
+ act.GetDefault(set);
+ set.SetItem("SetSelectionIndex", 5);
+ set.SetItem("DialogResult", 32);
+ ret=act.Execute(set);
+}
+
+
+
+
+
+
+
+####2. 조건박스수정용
+function OnScriptMacro_박스서식수정용()
+{
+	FindCtrl();
+	HAction.GetDefault("ShapeObjDialog", HParameterSet.HShapeObject.HSet);
+	with (HParameterSet.HShapeObject)
+	{
+		ShapeDrawLineAttr.Width = MiliToHwpUnit(0.4);
+		WidthRelTo = WidthRel("Column");
+		ShapeDrawLineAttr.Style = HwpLineType("Solid");
+		ShapeDrawRectType.Type = 2;
+		//Height = 7034;
+		Width = 10000;
+		ShapeDrawLineAttr.Color = RGBColor(0, 0, 0);
+		WidthRelTo = WidthRel("Column");
+		OutsideMarginBottom = MiliToHwpUnit(0.0);
+		OutsideMarginTop = MiliToHwpUnit(0.0);
+		OutsideMarginRight = MiliToHwpUnit(0.2);
+		OutsideMarginLeft = MiliToHwpUnit(0.2);
+		HSet.SetItem("ShapeType", 1);
+		ShapeListProperites.MarginBottom = MiliToHwpUnit(3.0);
+		ShapeListProperites.MarginTop = MiliToHwpUnit(4.0);
+		ShapeListProperites.MarginRight = MiliToHwpUnit(3.0);
+		ShapeListProperites.MarginLeft = MiliToHwpUnit(3.0);
+		ShapeListProperites.VertAlign = VAlign("Center");
+	}
+	HAction.Execute("ShapeObjDialog", HParameterSet.HShapeObject.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("MoveLeft");
+	HAction.Run("BreakPara");
+	HAction.Run("MoveRight");
+	HAction.Run("DeleteBack");
+	HAction.Run("MoveNextWord");
+	HAction.Run("BreakPara");
+	HAction.Run("MoveRight");
+	HAction.Run("DeleteBack");
+	HAction.Run("MoveLeft");	
+	HAction.Run("ParagraphShapeAlignCenter");
+	HAction.Run("MoveLeft");
+	HAction.Run("SelectAll");
+	HAction.Run("StyleShortcut6");
+	HAction.Run("StyleShortcut6");
+	//HAction.Run("StyleShortcut1");
+	//HAction.Run("StyleShortcut1");
+	HAction.Run("MoveRight");
+	//HAction.Run("MoveNextWord");
+}
+
+
+
+###3. 보기박스수정용
+
+function OnScriptMacro_보기박스붙이기()
+{
+	HAction.GetDefault("Bookmark", HParameterSet.HBookMark.HSet);
+	with (HParameterSet.HBookMark)
+	{
+		Name = "65000";
+		Command = 0;
+	}
+	HAction.Execute("Bookmark", HParameterSet.HBookMark.HSet);
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("MoveNextWord");
+	HAction.GetDefault("Bookmark", HParameterSet.HBookMark.HSet);
+	with (HParameterSet.HBookMark)
+	{
+		Name = "65001";
+		Command = 0;
+	}
+	HAction.Execute("Bookmark", HParameterSet.HBookMark.HSet);
+	HAction.Run("BreakPara");
+	HAction.Run("MoveRight");
+	HAction.Run("DeleteBack");
+	HAction.Run("MoveLeft");
+	HAction.GetDefault("Bookmark", HParameterSet.HBookMark.HSet);
+	with (HParameterSet.HBookMark)
+	{
+		Name = "65000";
+		Command = 1;
+	}
+	HAction.Execute("Bookmark", HParameterSet.HBookMark.HSet);
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("SelectAll");
+	HAction.Run("StyleShortcut6");
+	HAction.Run("StyleShortcut6");
+	//HAction.Run("StyleShortcut1");
+	//HAction.Run("StyleShortcut1");
+	HAction.Run("Cut");
+	HAction.Execute("Bookmark", HParameterSet.HBookMark.HSet);
+	HAction.Run("ViewOptionCtrlMark");
+	HAction.Run("DeleteBack");
+	HAction.Run("ViewOptionCtrlMark");
+	HAction.Run("DeleteBack");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("SelectAll");
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("Cancel");
+	HAction.GetDefault("Bookmark", HParameterSet.HBookMark.HSet);
+	with (HParameterSet.HBookMark)
+	{
+		Name = "65001";
+		Command = 1;
+	}
+	HAction.Execute("Bookmark", HParameterSet.HBookMark.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("ViewOptionCtrlMark");
+	HAction.Run("DeleteBack");
+	HAction.Run("ViewOptionCtrlMark");
+	HAction.Run("MoveSelPrevWord");
+	HAction.Run("Copy");
+	HAction.Run("MoveLeft");	
+	HAction.Run("BreakPara");
+	HAction.Run("MoveRight");
+	HAction.Run("DeleteBack");
+	HAction.Run("MoveNextWord");
+	HAction.Run("ParagraphShapeAlignCenter");
+}
+
+
+
+
+###4. 짧은선지간격조정
+
+function OnScriptMacro_탭하나문제선지정렬()
+{
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "①";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("Cancel");
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "②";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("MoveLeft");
+	HAction.Run("DeleteBack");
+	HAction.GetDefault("InsertText", HParameterSet.HInsertText.HSet);
+	HParameterSet.HInsertText.Text = " ";
+	HAction.Execute("InsertText", HParameterSet.HInsertText.HSet);
+	HAction.Run("RightShiftBlock");
+	HAction.Run("RightShiftBlock");
+	HAction.Run("RightShiftBlock");
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "③";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("Cancel");
+	HAction.Run("MoveLeft");
+	HAction.Run("DeleteBack");
+	HAction.GetDefault("InsertText", HParameterSet.HInsertText.HSet);
+	HParameterSet.HInsertText.Text = " ";
+	HAction.Execute("InsertText", HParameterSet.HInsertText.HSet);
+	HAction.Run("RightShiftBlock");
+	HAction.Run("RightShiftBlock");
+	HAction.Run("RightShiftBlock");
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "④";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("MoveLeft");
+	HAction.Run("DeleteBack");
+	HAction.Run("BreakPara");
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "⑤";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("MoveLeft");
+	HAction.Run("DeleteBack");
+	HAction.GetDefault("InsertText", HParameterSet.HInsertText.HSet);
+	HParameterSet.HInsertText.Text = " ";
+	HAction.Execute("InsertText", HParameterSet.HInsertText.HSet);
+	HAction.Run("RightShiftBlock");
+	HAction.Run("RightShiftBlock");
+	HAction.Run("RightShiftBlock");
+	HAction.Run("Cancel");
+	HAction.Run("MoveParaBegin");
+	HAction.Run("MovePrevParaBegin");
+	HAction.Run("MovePrevParaBegin");
+}
+
+
+
+####5 긴선지간격조정
+function OnScriptMacro_탭두개문제선지정렬()
+{
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "①";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	//HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	//HAction.Run("Cancel");
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "②";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("MoveLeft");
+	HAction.Run("DeleteBack");
+	HAction.GetDefault("InsertText", HParameterSet.HInsertText.HSet);
+	HParameterSet.HInsertText.Text = " ";
+	HAction.Execute("InsertText", HParameterSet.HInsertText.HSet);
+	HAction.Run("RightShiftBlock");
+	HAction.Run("RightShiftBlock");
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "③";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("Cancel");
+	HAction.Run("MoveLeft");
+	HAction.Run("DeleteBack");
+	HAction.GetDefault("InsertText", HParameterSet.HInsertText.HSet);
+	HParameterSet.HInsertText.Text = " ";
+	HAction.Execute("InsertText", HParameterSet.HInsertText.HSet);
+	HAction.Run("RightShiftBlock");
+	HAction.Run("RightShiftBlock");
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "④";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("MoveLeft");
+	HAction.Run("DeleteBack");
+	HAction.Run("BreakPara");
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "⑤";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("MoveLeft");
+	HAction.Run("DeleteBack");
+	HAction.GetDefault("InsertText", HParameterSet.HInsertText.HSet);
+	HParameterSet.HInsertText.Text = " ";
+	HAction.Execute("InsertText", HParameterSet.HInsertText.HSet);
+	HAction.Run("RightShiftBlock");
+	HAction.Run("RightShiftBlock");
+	HAction.Run("Cancel");
+	HAction.Run("MoveParaBegin");
+	HAction.Run("MovePrevParaBegin");
+	HAction.Run("MovePrevParaBegin");
+}
+
+
+
+
+
+####6. 미주앞으로끌고오기
+
+function OnScriptMacro_미주를문제앞으로()
+{
+	HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+		HSet.SetItem("DialogResult", 31);
+		SetSelectionIndex = 5;
+	}
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+	HAction.Run("MoveSelRight");
+	HAction.Run("Cut");
+	HAction.Run("MovePrevParaBegin");
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+}
+
+
+
+
+
+
+####7. 조건박스수정용_표
+
+function OnScriptMacro_박스서식_표로되어있는경우()
+{
+	HAction.GetDefault("Bookmark", HParameterSet.HBookMark.HSet);
+	with (HParameterSet.HBookMark)
+	{
+		Name = "65000";
+		Command = 0;
+	}
+	HAction.Execute("Bookmark", HParameterSet.HBookMark.HSet);
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("MoveNextWord");
+	HAction.GetDefault("Bookmark", HParameterSet.HBookMark.HSet);
+	with (HParameterSet.HBookMark)
+	{
+		Name = "65001";
+		Command = 0;
+	}
+	HAction.Execute("Bookmark", HParameterSet.HBookMark.HSet);
+	HAction.Run("MoveLeft");
+	HAction.Run("BreakPara");
+	HAction.Run("MoveRight");
+	HAction.Run("DeleteBack");
+	HAction.Run("MoveLeft");
+	HAction.GetDefault("Bookmark", HParameterSet.HBookMark.HSet);
+	with (HParameterSet.HBookMark)
+	{
+		Name = "65000";
+		Command = 1;
+	}
+	HAction.Execute("Bookmark", HParameterSet.HBookMark.HSet);
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("SelectAll");
+	HAction.Run("StyleShortcut6");
+	HAction.Run("StyleShortcut6");
+	//HAction.Run("StyleShortcut1");
+	//HAction.Run("StyleShortcut1");
+	HAction.Run("Cut");
+	HAction.Execute("Bookmark", HParameterSet.HBookMark.HSet);
+	HAction.Run("ViewOptionCtrlMark");
+	HAction.Run("DeleteBack");
+	HAction.Run("ViewOptionCtrlMark");
+	HAction.Run("DeleteBack");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("SelectAll");
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("Cancel");
+	HAction.GetDefault("Bookmark", HParameterSet.HBookMark.HSet);
+	with (HParameterSet.HBookMark)
+	{
+		Name = "65001";
+		Command = 1;
+	}
+	HAction.Execute("Bookmark", HParameterSet.HBookMark.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("ViewOptionCtrlMark");
+	HAction.Run("DeleteBack");
+	HAction.Run("ViewOptionCtrlMark");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveSelPrevWord");
+	HAction.Run("Copy");
+	HAction.Run("MoveLeft");	
+	HAction.Run("BreakPara");
+	HAction.Run("MoveRight");
+	HAction.Run("DeleteBack");
+	HAction.Run("MoveNextWord");
+	HAction.Run("ParagraphShapeAlignCenter");
+}
+
+
+
+
+
+###8. 선지간격세줄로
+function OnScriptMacro_빠른정답5개마다색칠()
+{
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "②";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("MoveLeft");
+	HAction.Run("DeleteBack");
+	HAction.GetDefault("InsertText", HParameterSet.HInsertText.HSet);
+	HParameterSet.HInsertText.Text = " ";
+	HAction.Execute("InsertText", HParameterSet.HInsertText.HSet);
+	HAction.Run("RightShiftBlock");
+	//HAction.Run("RightShiftBlock");
+	HAction.Run("RightShiftBlock");
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "③";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("MoveLeft");
+	HAction.Run("DeleteBack");
+	HAction.Run("BreakPara");
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "④";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("Cancel");
+	HAction.Run("MoveLeft");
+	HAction.Run("DeleteBack");
+	HAction.GetDefault("InsertText", HParameterSet.HInsertText.HSet);
+	HParameterSet.HInsertText.Text = " ";
+	HAction.Execute("InsertText", HParameterSet.HInsertText.HSet);
+	HAction.Run("RightShiftBlock");
+	//HAction.Run("RightShiftBlock");
+	HAction.Run("RightShiftBlock");
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "⑤";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+
+	HAction.Run("Cancel");
+	HAction.Run("MoveLeft");
+	HAction.Run("DeleteBack");
+	HAction.Run("BreakPara");
+	HAction.Run("Cancel");
+	HAction.Run("MoveNextWord");
+}
+
+
+
+
+
+
+#####13. 복붙이전표현수정용
+
+
+
+
+
+
+
+
+####14. 복붙직후표현수정용
+
+function OnScriptMacro_복붙직후표현수정용()
+{
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "최대값";
+		ReplaceString = "최댓값";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 0;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "최소값";
+		ReplaceString = "최솟값";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 0;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "꼭지점";
+		ReplaceString = "꼭짓점";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 0;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "이 때";
+		ReplaceString = "이때";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 0;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "<보기>";
+		ReplaceString = "[보기]";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 0;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "〈보기〉";
+		ReplaceString = "[보기]";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 0;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "㈎";
+		ReplaceString = "(가)";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 0;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "㈏";
+		ReplaceString = "(나)";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 0;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "㈐";
+		ReplaceString = "(다)";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 0;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "㈑";
+		ReplaceString = "(라)";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 0;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+}
+
+
+
+
+
+####15. 내양식으로바꾸기
+
+function OnScriptMacro_내양식으로바꾸기()
+{
+	HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+		HSet.SetItem("DialogResult", 31);
+		SetSelectionIndex = 5;
+	}
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("BreakPara");
+	HAction.Run("MoveUp");
+	HAction.Run("StyleShortcut2");
+	HAction.Run("MoveRight");
+	HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+		HSet.SetItem("DialogResult", 32);
+		SetSelectionIndex = 5;
+	}
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+	/* HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	*/ HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("SelectAll");
+	HAction.Run("StyleShortcut1");
+	HAction.Run("StyleShortcut1");
+	HAction.Run("Cancel");
+	HAction.Run("BreakPara");
+}
+
+
+
+
+
+
+#####16. 출처박스붙이기
+
+function OnScriptMacro_출처달기()
+{
+	HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+		HSet.SetItem("DialogResult", 31);
+		SetSelectionIndex = 5;
+	}
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+}
+
+
+
+
+####19. 학생용_정답만남기기
+
+function OnScriptMacro_정답만남기기()
+{
+	HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+		HSet.SetItem("DialogResult", 32);
+		SetSelectionIndex = 5;
+	}
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+	HAction.Run("MoveSelDown");
+	HAction.Run("Cut");
+	HAction.Run("SelectAll");
+	HAction.Run("Delete");
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("SelectAll");
+	HAction.Run("StyleShortcut1");
+	HAction.Run("StyleShortcut1");
+	HAction.Run("MoveRight");
+}
+
+
+
+
+####20. 학생용_5개마다박스
+
+
+
+
+
+
+####21. 교사용_답만
+
+function OnScriptMacro_답만복사해오기()
+{
+	HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+		HSet.SetItem("DialogResult", 32);
+		SetSelectionIndex = 5;
+	}
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+	//HAction.Run("MoveSelDown");
+	HAction.Run("SelectAll");
+	//HAction.Run("Copy");
+	HAction.Run("Cut");
+	HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+		HSet.SetItem("DialogResult", 31);
+		SetSelectionIndex = 5;
+	}
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("BreakPara");
+	HAction.Run("BreakPara");
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+}
+
+
+
+####22. 교사용_해설포함
+
+function OnScriptMacro_문제별답지붙이기_미주삭제()
+{
+	HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+		HSet.SetItem("DialogResult", 32);
+		SetSelectionIndex = 5;
+	}
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+	HAction.Run("SelectAll");
+	HAction.Run("Cut");
+	HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+		HSet.SetItem("DialogResult", 31);
+		SetSelectionIndex = 5;
+	}
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("BreakPara");
+	HAction.Run("BreakPara");
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+}
+
+
+
+
+
+
+####24. 교육청평가원붙이기
+
+function OnScriptMacro_교육청평가원추가용()
+{
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "3월";
+		ReplaceString = "3월 교육청";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 1;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "4월";
+		ReplaceString = "4월 교육청";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 1;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "5월";
+		ReplaceString = "5월 교육청";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 1;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "6월";
+		ReplaceString = "6월 평가원";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 1;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "7월";
+		ReplaceString = "7월 교육청";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 1;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "8월";
+		ReplaceString = "8월 교육청";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 1;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "9월";
+		ReplaceString = "9월 평가원";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 1;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "10월";
+		ReplaceString = "10월 교육청";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 1;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+	HAction.GetDefault("AllReplace", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		MatchCase = 0;
+		AllWordForms = 0;
+		SeveralWords = 0;
+		UseWildCards = 0;
+		WholeWordOnly = 0;
+		AutoSpell = 0;
+		Direction = FindDir("Forward");
+		IgnoreFindString = 0;
+		IgnoreReplaceString = 0;
+		FindString = "11월";
+		ReplaceString = "11월 교육청";
+		ReplaceMode = 1;
+		IgnoreMessage = 1;
+		HanjaFromHangul = 0;
+		FindJaso = 0;
+		FindRegExp = 1;
+		FindStyle = "";
+		ReplaceStyle = "";
+		FindType = 1;
+	}
+	HAction.Execute("AllReplace", HParameterSet.HFindReplace.HSet);
+
+}
+
+
+
+
+
+
+###25. 교육청이름제거
+function OnScriptMacro_교육청이름제거()
+{
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "\\d";
+		FindString = "\\k[0-9]*월";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 0;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 1;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("MoveParaBegin");
+	HAction.Run("MoveSelRight");
+	HAction.Run("MoveSelRight");
+	HAction.Run("DeleteBack");
+}
+
+
+
+
+
+
+###26. 출처박스자간조절
+
+
+
+
+
+
+###28. 단원별_고3_출처채우기
+
+
+function OnScriptMacro_단원별_고3_출처채우기()
+{
+	HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+		HSet.SetItem("DialogResult", 31);
+		SetSelectionIndex = 5;
+	}
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "점][*년";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 1;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("MoveRight");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveSelLeft");
+	HAction.Run("MoveSelLeft");
+	HAction.Run("MoveSelLeft");
+	HAction.Run("MoveSelLeft");
+	HAction.Run("Copy");
+	HAction.Run("MoveRight");
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+
+	HAction.GetDefault("ReverseFind", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+	}
+	HAction.Execute("ReverseFind", HParameterSet.HGotoE.HSet);
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("PasteTextOnly");
+
+	// 연도 붙이기
+
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);	
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveSelPrevWord");
+	HAction.Run("MoveSelRight");
+	HAction.Run("Copy");
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+	HAction.Execute("ReverseFind", HParameterSet.HGotoE.HSet);
+	HAction.Run("MoveRight");
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("PasteTextOnly");
+
+	//점수 붙이기
+
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("MoveRight");
+	HAction.Run("MoveSelParaBegin");
+	HAction.Run("Delete");
+
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "]";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 1;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveSelParaBegin");
+	HAction.Run("Copy");
+	HAction.Run("MoveNextParaBegin");
+	HAction.Run("MoveSelPrevParaBegin");
+	HAction.Run("Delete");
+
+	//시험 종류 복사 후 제거
+
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+	HAction.Execute("ReverseFind", HParameterSet.HGotoE.HSet);
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("TableRightCellAppend");
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("PasteTextOnly");
+
+
+	//시험 종류 붙이기
+}
+
+
+
+
+
+
+####29. 단원별_고12_출처채우기
+
+
+function OnScriptMacro_고12모의출처매크로()
+{
+	HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+		HSet.SetItem("DialogResult", 31);
+		SetSelectionIndex = 5;
+	}
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+
+	HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+	with (HParameterSet.HFindReplace)
+	{
+		ReplaceString = "";
+		FindString = "[*점][*년";
+		IgnoreReplaceString = 0;
+		IgnoreFindString = 0;
+		Direction = FindDir("Forward");
+		WholeWordOnly = 0;
+		UseWildCards = 1;
+		SeveralWords = 0;
+		AllWordForms = 0;
+		MatchCase = 0;
+		ReplaceMode = 0;
+		ReplaceStyle = "";
+		FindStyle = "";
+		FindRegExp = 0;
+		FindJaso = 0;
+		HanjaFromHangul = 0;
+		IgnoreMessage = 1;
+		FindType = 1;
+	}
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("MoveRight");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveSelLeft");
+	HAction.Run("MoveSelLeft");
+	HAction.Run("MoveSelLeft");
+	HAction.Run("MoveSelLeft");
+	HAction.Run("Copy");
+	HAction.Run("MoveRight");
+	//HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+	//with (HParameterSet.HGotoE)
+	//{
+	//	HSet.SetItem("DialogResult", 31);
+	//	SetSelectionIndex = 5;
+	//}
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+
+	HAction.GetDefault("ReverseFind", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+	}
+	HAction.Execute("ReverseFind", HParameterSet.HGotoE.HSet);
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("PasteTextOnly");
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);	
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveSelRight");
+	HAction.Run("Copy");
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+	HAction.Execute("ReverseFind", HParameterSet.HGotoE.HSet);
+	HAction.Run("MoveRight");
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("PasteTextOnly");
+
+	HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+	HAction.Run("MoveRight");
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveSelPrevWord");
+	HAction.Run("Copy");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveSelPrevParaBegin");
+	HAction.Run("Delete");
+
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+	HAction.Execute("ReverseFind", HParameterSet.HGotoE.HSet);
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("TableRightCellAppend");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("PasteTextOnly");
+
+}
+
+
+
+####30. 사설포함_출처채우기
+
+function OnScriptMacro_사설포함양식용()
+{
+	HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+		HSet.SetItem("DialogResult", 31);
+		SetSelectionIndex = 5;
+	}
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+	HAction.Run("MovePrevParaBegin");
+	HAction.Run("MoveRight");
+	HAction.Run("SelectAll");
+	HAction.Run("Cut");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveNextParaBegin");
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveRight");
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("PasteTextOnly");
+	HAction.Run("DeleteBack");
+	HAction.Run("MoveSelPrevWord");
+	HAction.Run("Cut");
+	HAction.Run("DeleteBack");
+	HAction.Run("DeleteBack");
+	HAction.Run("MoveRight");
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("PasteTextOnly");
+	HAction.GetDefault("InsertText", HParameterSet.HInsertText.HSet);
+	HParameterSet.HInsertText.Text = " ";
+	HAction.Execute("InsertText", HParameterSet.HInsertText.HSet);
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveRight");
+	HAction.Run("MovePrevParaBegin");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("SelectAll");
+	HAction.Run("Cut");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveNextParaBegin");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("DeleteBack");
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("PasteTextOnly");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MovePrevParaBegin");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("SelectAll");
+	HAction.Run("Cut");
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveRight");
+	HAction.Run("MovePrevWord");
+	HAction.Run("MoveRight");
+	HAction.Run("DeleteBack");
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("PasteTextOnly");
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveRight");
+	HAction.Run("MovePrevWord");
+	HAction.Run("MovePrevParaBegin");
+	HAction.Run("MovePrevParaBegin");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("SelectAll");
+	HAction.Run("Cut");
+	HAction.Run("MoveLeft");
+	HAction.Run("MoveNextParaBegin");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveNextWord");
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("PasteTextOnly");
+	HAction.GetDefault("InsertText", HParameterSet.HInsertText.HSet);
+	HParameterSet.HInsertText.Text = " ";
+	HAction.Execute("InsertText", HParameterSet.HInsertText.HSet);
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveRight");
+	HAction.Run("MovePrevParaBegin");
+	HAction.Run("MovePrevParaBegin");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveRight");
+	HAction.Run("SelectAll");
+	HAction.Run("Cut");
+	HAction.Run("MoveRight");
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveSelLeft");
+	HAction.Run("MoveSelLeft");
+	HAction.Run("MoveSelLeft");
+	HAction.Run("MoveSelLeft");
+	HAction.Run("MoveSelLeft");
+	HAction.Run("Delete");
+	HAction.Run("MoveDown");
+	HAction.Run("MoveNextWord");
+	HAction.Run("MoveRight");
+	HAction.GetDefault("Paste", HParameterSet.HSelectionOpt.HSet);
+	with (HParameterSet.HSelectionOpt)
+	{
+	}
+	HAction.Execute("Paste", HParameterSet.HSelectionOpt.HSet);
+	HAction.Run("PasteTextOnly");
+		HAction.Execute("InsertText", HParameterSet.HInsertText.HSet);
+}
+
+
+
+
+
+
+###31. 예전부등식수정용
+
+function OnScriptMacro_예전부등식교체v2()
+{
+
+	// 문서 제일 앞으로 캐럿 이동 
+	MovePos(2,0,0);
+
+	code2=HeadCtrl;
+
+	cnt=0;
+
+	do
+	{
+		// 문서 전체의 수식을 순회하는 코드
+		if(code2.CtrlID=="eqed")
+		{
+			// 수식으로 캐럿 이동 
+			//SetPosBySet(code2.GetAnchorPos(0));
+
+			// 수식으로 이동
+			HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+			with (HParameterSet.HGotoE)
+			{
+				HSet.SetItem("DialogResult", 37);
+				SetSelectionIndex = 5;
+			}
+			HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+
+			// 수식을 개체 지정 
+			FindCtrl();
+
+			// 부등식 변경 
+			HAction.GetDefault("EquationPropertyDialog", HParameterSet.HShapeObject.HSet);
+			with (HParameterSet.HShapeObject)
+			{
+				Width = 1012;
+				HSet.SetItem("ShapeType", 3);
+				String = String.replace(/≦/g, " LEQ " ); 
+				String = String.replace(/<=/g, " LEQ " ); 
+				String = String.replace(/≧/g, " GEQ " ); 
+				String = String.replace(/>=/g, " GEQ " ); 		
+			}
+			HAction.Execute("EquationPropertyDialog", HParameterSet.HShapeObject.HSet);
+
+			HAction.Run("Cancel");
+
+			HAction.Run("MoveRight");
+
+			cnt++;
+
+		} // if 문 종료 
+		code2=code2.Next;  
+
+	}while(code2)
+
+	HAction.Run("Cancel");
+	HAction.Run("Cancel");
+	MovePos(2,0,0);
+
+	// 메세지 박스 
+	XHwpMessageBox.String= " "+cnt+" 개의 수식을 처리하였습니다." ;
+	XHwpMessageBox.Flag=0;
+	XHwpMessageBox.DoModal();
+
+}
+
+
+
+
+
+####32.수식bold해제
+
+function OnScriptMacro_문서전체수식볼드해제()
+{
+
+	var code=HeadCtrl;  // 문서 중 첫 번째 컨트롤 읽기 
+
+	// do~while 반복문 시작 
+	do
+	{
+		if(code.CtrlID=="eqed")  // 수식이 존재할 때까지 반복문 제어 
+		{ 
+			// 수식 찾아가기
+			HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+			with (HParameterSet.HGotoE)
+			{
+				HSet.SetItem("DialogResult", 37);
+				SetSelectionIndex = 5;
+			}
+			HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+
+			FindCtrl(); // 수식 편집창 안으로 들어가기
+
+			// 수식 편집 명령
+			HAction.GetDefault("EquationPropertyDialog", HParameterSet.HShapeObject.HSet);
+			with (HParameterSet.HShapeObject)
+			{
+
+				HSet.SetItem("ShapeType", 3);
+				//String = "bold{"+string+"}";
+				String =String.replace( /bold|BOLD/,"" );
+
+			}
+			HAction.Execute("EquationPropertyDialog", HParameterSet.HShapeObject.HSet);
+
+			HAction.Run("Cancel"); // 수식 편집창 밖으로
+			HAction.Run("MoveRight"); // 수식 오른쪽으로 커서 이동
+
+			// 다시 찾기 
+			HAction.GetDefault("RepeatFind", HParameterSet.HFindReplace.HSet);
+			with (HParameterSet.HFindReplace)
+			{
+			}
+			HAction.Execute("RepeatFind", HParameterSet.HFindReplace.HSet);
+
+		} // if문 종료 
+	
+		code=code.Next; // 다음 컨트롤 읽기 
+
+	}while(code)    // do~while 반복문 종료 
+
+
+}
+
+
+
+###33. 수식을텍스트로
+
+function OnScriptMacro_수식안에글자를밖으로()
+{
+
+	var c; // 변수 c 생성
+
+	// 수식 찾아가기
+	HAction.GetDefault("Goto", HParameterSet.HGotoE.HSet);
+	with (HParameterSet.HGotoE)
+	{
+		HSet.SetItem("DialogResult", 37);
+		SetSelectionIndex = 5;
+	}
+	HAction.Execute("Goto", HParameterSet.HGotoE.HSet);
+
+	// 수식의 속성
+	FindCtrl();
+	HAction.GetDefault("EquationPropertyDialog", HParameterSet.HShapeObject.HSet);
+	with (HParameterSet.HShapeObject)
+	{
+		HSet.SetItem("ShapeType", 3);
+		EqFontName = "HYhwpEQ";
+		String = ""+string+"";
+	
+		c = String; // 변수 c에 수식 안에 문자열 저장
+	}
+	HAction.Execute("EquationPropertyDialog", HParameterSet.HShapeObject.HSet);
+
+
+	HAction.Run("Cancel"); // 수식 개체 지정 해제
+
+     	HAction.Run("MoveSelRight");  //  오른쪽 셀 지정
+
+     	HAction.Run("Delete");  // 블록 삭제
+
+	 write(c); // 수식 안에 문자열 쓰기
+
+
+}
+
+function write(s){
+	var act=CreateAction("InsertText");
+	var set=act.CreateSet();
+	act.GetDefault(set);
+	set.SetItem("Text",s);
+	act.Execute(set);
+}
+
+
+
+
+####34. 오답노트매크로
+
